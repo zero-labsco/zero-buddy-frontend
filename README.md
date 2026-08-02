@@ -1,14 +1,42 @@
-# Zero Buddy — Frontend
+<p align="center">
+  <img src="https://img.shields.io/badge/Zero%20Buddy-Frontend-5eead4?style=for-the-badge" alt="Zero Buddy Frontend" />
+  <img src="https://img.shields.io/badge/Next.js-14-000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/License-Apache--2.0-blue?style=for-the-badge" alt="License" />
+</p>
 
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+<h1 align="center">Zero Buddy Frontend</h1>
 
-> The official chat UI for the Zero Buddy AI assistant, styled to match the
-> Zero Labs brand (dark theme, teal accent, Inter / Space Grotesk / JetBrains
-> Mono typography).
+<p align="center">
+  The official chat UI for the Zero Buddy AI assistant, styled to match the
+  Zero Labs brand (dark theme, teal accent, Inter / Space Grotesk / JetBrains
+  Mono typography).
+</p>
 
-> **License:** [Apache-2.0](LICENSE) © 2026 Zero Labs.
+<p align="center">
+  <a href="https://github.com/zero-labsco/zero-buddy-frontend">Frontend Repo</a>
+  ·
+  <a href="https://github.com/zero-labsco/zero-buddy-backend">Backend Repo</a>
+  ·
+  <a href="./CONTRIBUTING.md">Contributing</a>
+</p>
 
 ---
+
+> **Part of the Zero Buddy project.** This repository is the **frontend** (Next.js
+> chat UI). The API server lives in a separate repo:
+> [**Zero Buddy Backend »**](https://github.com/zero-labsco/zero-buddy-backend)
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Quick Start](#quick-start)
+- [Building for Production](#building-for-production)
+- [Environment](#environment)
+- [Notes](#notes)
+- [Contributing & CI](#contributing--ci)
 
 ## Overview
 
@@ -24,7 +52,7 @@ The look & feel mirrors [zerolabsco.com](https://zerolabsco.com):
   **JetBrains Mono** for code/labels
 - Subtle radial glow background and smooth fade-in animations
 
-## Tech stack
+## Tech Stack
 
 | Concern   | Choice                      |
 | --------- | --------------------------- |
@@ -33,7 +61,7 @@ The look & feel mirrors [zerolabsco.com](https://zerolabsco.com):
 | Styling   | Plain CSS (globals.css)     |
 | Data      | `fetch` to backend REST API |
 
-## Project structure
+## Project Structure
 
 ```
 frontend/
@@ -50,7 +78,7 @@ frontend/
 └── .env.local.example
 ```
 
-## Quick start
+## Quick Start
 
 ```bash
 # 1. Install dependencies
@@ -65,7 +93,7 @@ npm run dev
 #    Open http://localhost:3040
 ```
 
-## Building for production
+## Building for Production
 
 ```bash
 npm run build
