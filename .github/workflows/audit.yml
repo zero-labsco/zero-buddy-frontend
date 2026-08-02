@@ -1,0 +1,76 @@
+name: Dependency Audit & Auto-Fix
+
+# 自动检查前端依赖的安全漏洞（severity vulnerabilities）：
+# 每周一 09:00 自动跑 npm audit；若发现可修复漏洞，自动 npm audit fix
+# 并开一个 PR（标题符合 Conventional Commits，不会自动合并，需人工 review）。
+# 也可在 Actions 页面手动触发。
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # 每周一 09:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  audit:
+    name: npm audit & auto-fix PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for vulnerabilities
+        id: audit
+        continue-on-error: true
+        run: |
+          if npm audit --audit-level=high; then
+            echo "has_vulns=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_vulns=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stop if no vulnerabilities
+        if: steps.audit.outputs.has_vulns == 'false'
+        run: echo "✅ No high/critical vulnerabilities found. Nothing to do."
+
+      - name: Auto-fix vulnerabilities (non-breaking)
+        if: steps.audit.outputs.has_vulns == 'true'
+        run: npm audit fix
+
+      - name: Create Pull Request
+        if: steps.audit.outputs.has_vulns == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(deps): fix npm audit vulnerabilities"
+          branch: chore/auto-fix-npm-audit
+          delete-branch: true
+          title: "chore(deps): fix npm audit vulnerabilities"
+          body: |
+            ## Automated dependency security fix
+
+            This PR was created automatically by the **Dependency Audit & Auto-Fix** workflow
+            after `npm audit --audit-level=high` detected vulnerabilities.
+
+            - Fixed via `npm audit fix` (non-breaking, compatible updates only).
+            - Please review the diff and run `npm ci && npm run build` before merging.
+
+            > If `npm audit fix` could not resolve a vulnerability without a breaking change,
+            > it is left for manual intervention.
+          labels: |
+            dependencies
+            security
+          base: ${{ github.ref_name }}

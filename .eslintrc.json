@@ -1,0 +1,36 @@
+{
+  "root": true,
+  "extends": ["next/core-web-vitals", "airbnb"],
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module"
+  },
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "import/prefer-default-export": "off",
+    "react/jsx-props-no-spreading": "off",
+    // —— 以下 airbnb 规则与 Next.js / TypeScript 习惯冲突，交由 Prettier 或语言本身处理 ——
+    "linebreak-style": "off", // 行尾统一由 Prettier (endOfLine: lf) 管理
+    "react/jsx-filename-extension": "off", // 允许 .tsx 写 JSX（Next.js 默认）
+    "import/extensions": "off", // Next.js 别名导入不带扩展名
+    "react/button-has-type": "off", // 无提交行为的按钮不必强制 type
+    "react/jsx-one-expression-per-line": "off", // 与 Prettier 折行冲突
+    "react/no-array-index-key": "off", // map 中用 index 作 key 在本项目可接受
+    "react/no-unescaped-entities": "off", // 中文引号/符号无需转义
+    "lines-around-directive": "off", // 'use client' 紧贴顶部即可
+    "lines-between-class-members": "off", // 与 Prettier 折行冲突
+    "object-curly-newline": "off", // 由 Prettier 控制
+    "operator-linebreak": "off", // 由 Prettier 控制
+    "arrow-body-style": "off", // 由 Prettier 控制
+    "no-nested-ternary": "off", // 可读性由团队约定
+    "no-irregular-whitespace": "off", // 误报 CJK 场景常见
+    "camelcase": "off", // next/font 的字体名（如 Space_Grotesk）须保持原样
+    "comma-dangle": "off", // 由 Prettier (trailingComma) 控制
+    "prefer-destructuring": "off", // 与可读性权衡
+    "no-undef": "off", // 类型/全局由 TypeScript 处理
+    "no-console": "off", // 保留 console.error 用于前端错误排查
+    "react-hooks/exhaustive-deps": "warn" // 仅提示，不阻断
+  },
+  "ignorePatterns": ["node_modules/", ".next/", "out/"]
+}

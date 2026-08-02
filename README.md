@@ -1,8 +1,12 @@
 # Zero Buddy — Frontend
 
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+
 > The official chat UI for the Zero Buddy AI assistant, styled to match the
 > Zero Labs brand (dark theme, teal accent, Inter / Space Grotesk / JetBrains
 > Mono typography).
+
+> **License:** [Apache-2.0](LICENSE) © 2026 Zero Labs.
 
 ---
 
@@ -94,6 +98,60 @@ npm start
   official website or a `mailto:` email), the frontend renders it as a clickable
   link after typing finishes (`mailto:` opens the mail client, `http(s)` opens
   in a new tab).
+
+---
+
+## Contributing & CI
+
+This repo follows the [Zero Labs contributing guidelines](https://github.com/zero-labsco/.github/blob/main/profile/CONTRIBUTING.md):
+
+- **Commit messages** must follow [Conventional Commits](https://www.conventionalcommits.org)
+  (e.g. `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `ci:` …).
+  PR commits are enforced by `wagoid/commitlint-github-action` (see `commitlint.config.js`).
+- **Branch naming**: use a descriptive prefix, e.g. `feature/your-feature-name`.
+- **Code style**: JavaScript/TypeScript uses `prettier` + `eslint` (Airbnb JS Style Guide).
+  Run `npm run format` and `npm run lint:eslint` before pushing.
+- **Pre-commit hook**: this repo ships `prettier` + `eslint` checks in `.githooks/pre-commit`.
+  Enable it once after cloning:
+
+  ```bash
+  git config core.hooksPath .githooks
+  ```
+
+  It rejects commits that fail `npm run lint:prettier` or `npm run lint:eslint`.
+
+### Available scripts
+
+| Script                  | Purpose                                  |
+| ----------------------- | ---------------------------------------- |
+| `npm run dev`           | Start Next.js dev server on port 3040    |
+| `npm run build`         | Production build (type-check + lint)     |
+| `npm run lint:eslint`   | ESLint (Airbnb) check                    |
+| `npm run lint:prettier` | Prettier format check                    |
+| `npm run format`        | Auto-format with Prettier                |
+
+### CI workflow (`.github/workflows/ci.yml`)
+
+Runs on every push to `main`/`master` and on every PR:
+
+1. `npm run lint:prettier` — Prettier format check.
+2. `npm run lint:eslint` — ESLint (Airbnb) check.
+3. `npm run build` — Next.js build (includes TypeScript type-check).
+4. **Commit Message Lint** (PR only) — validates each commit against Conventional Commits.
+
+### Dependabot (`.github/dependabot.yml`)
+
+- `npm`: weekly dependency updates, `chore:` commit prefix.
+- `github-actions`: weekly workflow updates, `ci:` commit prefix.
+
+### Dependency Audit & Auto-Fix (`.github/workflows/audit.yml`)
+
+- Runs **every Monday 09:00 UTC** and is also manually triggerable (`workflow_dispatch`).
+- Runs `npm audit --audit-level=high`. If vulnerabilities are found, it runs `npm audit fix`
+  (compatible, non-breaking updates only) and opens a PR titled
+  `chore(deps): fix npm audit vulnerabilities` for human review.
+- The PR is **never auto-merged** — a maintainer must review and merge.
+- Breaking-only fixes (requiring `--force`) are left for manual intervention.
 
 ---
 

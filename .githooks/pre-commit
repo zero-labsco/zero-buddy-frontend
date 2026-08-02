@@ -1,0 +1,23 @@
+#!/bin/sh
+# 前端提交前钩子：保证代码格式符合 prettier 且通过 eslint(Airbnb)，避免 CI 失败。
+# 启用方式（克隆仓库后执行一次）：git config core.hooksPath .githooks
+set -e
+
+if ! command -v npm >/dev/null 2>&1; then
+  echo "⚠️  未找到 npm，跳过检查（请确保本地已安装 Node.js）"
+  exit 0
+fi
+
+if ! npm run lint:prettier; then
+  echo "❌ prettier 格式检查未通过。请先运行："
+  echo "      npm run format"
+  echo "   格式化后再提交。"
+  exit 1
+fi
+
+if ! npm run lint:eslint; then
+  echo "❌ eslint(Airbnb) 检查未通过，请修复上述问题后再提交。"
+  exit 1
+fi
+
+echo "✅ prettier + eslint 检查通过。"

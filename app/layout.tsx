@@ -5,9 +5,21 @@ import './globals.css';
 
 // 三款 Google 字体：正文 Inter、标题 Space Grotesk、等宽 JetBrains Mono
 // 通过 CSS 变量注入，供 globals.css 与各组件使用
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space', display: 'swap' });
-const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains', display: 'swap' });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space',
+  display: 'swap',
+});
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains',
+  display: 'swap',
+});
 
 // 页面元信息（标题/描述）
 export const metadata: Metadata = {
@@ -16,7 +28,11 @@ export const metadata: Metadata = {
     'An AI assistant for Zero Labs open-source projects: Zero Inspector Kit, Flutter Agent Kit, WizardPlayer and Invoice Zero.',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"

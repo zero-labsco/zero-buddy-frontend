@@ -28,7 +28,9 @@ export default function Hero() {
   return (
     <section className="hero">
       {/* 顶部等宽小字副标题 */}
-      <p className="hero-subtitle fade-in">{ORG_NAME.toUpperCase()} &middot; AI ASSISTANT</p>
+      <p className="hero-subtitle fade-in">
+        {ORG_NAME.toUpperCase()} &middot; AI ASSISTANT
+      </p>
 
       {/* 大标题：逐字符渲染，带错峰入场与悬停抖动发光 */}
       <h1 className="hero-title">
@@ -56,12 +58,16 @@ export default function Hero() {
 
       {/* 描述文字 */}
       <p className="hero-desc fade-in" style={{ animationDelay: '1.15s' }}>
-        An AI assistant grounded in {ORG_NAME}&rsquo; open-source projects &mdash; Zero
-        Inspector Kit, Flutter Agent Kit, WizardPlayer, and Invoice Zero.
+        An AI assistant grounded in {ORG_NAME}&rsquo; open-source projects
+        &mdash; Zero Inspector Kit, Flutter Agent Kit, WizardPlayer, and Invoice
+        Zero.
       </p>
 
       {/* 青绿渐变分隔线 */}
-      <div className="hero-divider fade-in" style={{ animationDelay: '1.3s' }} />
+      <div
+        className="hero-divider fade-in"
+        style={{ animationDelay: '1.3s' }}
+      />
     </section>
   );
 }

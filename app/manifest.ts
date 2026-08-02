@@ -5,7 +5,8 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Zero Buddy',
     short_name: 'Zero Buddy',
-    description: 'AI chat assistant for Zero Labs — answers about open-source developer tools and apps.',
+    description:
+      'AI chat assistant for Zero Labs — answers about open-source developer tools and apps.',
     start_url: '/',
     display: 'standalone',
     background_color: '#0a0a0a',

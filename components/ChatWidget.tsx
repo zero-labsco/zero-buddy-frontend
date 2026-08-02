@@ -11,7 +11,8 @@ type Message = { role: 'user' | 'assistant'; content: string; url?: string };
 // 避免网址以纯文本堆叠、与来源链接块视觉粘连。仅用于打字结束后的静态渲染。
 // 匹配完整链接（保留点号，正确覆盖域名）；遇空白或 CJK/全角字符即止，
 // 避免中文紧跟 URL 后整段被误判为链接。尾部标点由 linkify 剥离归还文本
-const URL_RE = /(https?:\/\/[^\s　-鿿]+|mailto:[^\s　-鿿]+|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
+const URL_RE =
+  /(https?:\/\/[^\s　-鿿]+|mailto:[^\s　-鿿]+|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
 // 链接尾部可能出现的句读/标点，需从链接中剥离、作为普通文本显示
 const TRAILING_PUNCT = /[，。、；：！？.,;:!?)\]}'"]+$/;
 function linkify(text: string, keyPrefix: string) {
@@ -20,7 +21,10 @@ function linkify(text: string, keyPrefix: string) {
   parts.forEach((part, idx) => {
     if (!part) return;
     // 无状态判定：该段是否为一个链接
-    const isUrl = /^(https?:\/\/|mailto:)|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(part);
+    const isUrl =
+      /^(https?:\/\/|mailto:)|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+        part,
+      );
     if (!isUrl) {
       out.push(<span key={`${keyPrefix}-${idx}`}>{part}</span>);
       return;
@@ -29,7 +33,10 @@ function linkify(text: string, keyPrefix: string) {
     const m = part.match(TRAILING_PUNCT);
     const punct = m ? m[0] : '';
     const core = punct ? part.slice(0, -punct.length) : part;
-    const href = core.startsWith('http') || core.startsWith('mailto:') ? core : `mailto:${core}`;
+    const href =
+      core.startsWith('http') || core.startsWith('mailto:')
+        ? core
+        : `mailto:${core}`;
     out.push(
       <a
         key={`${keyPrefix}-${idx}`}
@@ -39,7 +46,7 @@ function linkify(text: string, keyPrefix: string) {
         rel={core.startsWith('http') ? 'noopener noreferrer' : undefined}
       >
         {core.replace('mailto:', '')}
-      </a>
+      </a>,
     );
     if (punct) out.push(<span key={`${keyPrefix}-p-${idx}`}>{punct}</span>);
   });
@@ -74,7 +81,10 @@ export default function ChatWidget() {
 
   // 新消息或打字进度变化时，自动滚动到底部
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: 'smooth',
+    });
   }, [messages, revealed, loading]);
 
   // 组件卸载时清理所有仍在跑的打字定时器
@@ -118,7 +128,7 @@ export default function ChatWidget() {
         setRevealed((r) => ({ ...r, [index]: shown }));
       }, 16);
     },
-    [reduceMotion]
+    [reduceMotion],
   );
 
   // 发送一条消息到后端，并把回答加入列表、触发打字效果。
@@ -134,7 +144,7 @@ export default function ChatWidget() {
 
     try {
       const { reply, url } = await sendChat(
-        next.map((m) => ({ role: m.role, content: m.content }))
+        next.map((m) => ({ role: m.role, content: m.content })),
       );
       const idx = next.length;
       setRetryable(null); // 成功则清除重试态
@@ -144,7 +154,10 @@ export default function ChatWidget() {
       const apiErr = err instanceof ChatApiError ? err : null;
       // 记录错误日志便于排查（网络错误单独标记）
       if (apiErr?.isNetworkError) {
-        console.error('[ChatWidget] backend unreachable / timeout:', apiErr.message);
+        console.error(
+          '[ChatWidget] backend unreachable / timeout:',
+          apiErr.message,
+        );
       } else {
         console.error('[ChatWidget] chat request failed:', err);
       }
@@ -178,9 +191,16 @@ export default function ChatWidget() {
       </div>
 
       {/* 消息区 */}
-      <div className="chat-messages" ref={scrollRef} aria-live="polite" aria-atomic="false">
+      <div
+        className="chat-messages"
+        ref={scrollRef}
+        aria-live="polite"
+        aria-atomic="false"
+      >
         {messages.length === 0 && (
-          <div className="msg empty">Start a conversation or pick a question below.</div>
+          <div className="msg empty">
+            Start a conversation or pick a question below.
+          </div>
         )}
         {messages.map((m, i) => {
           const shown = revealed[i] ?? m.content.length; // 已揭示字符数
@@ -189,16 +209,24 @@ export default function ChatWidget() {
           const showLink = m.role === 'assistant' && m.url && !isTyping;
           return (
             <div key={i} className={`msg ${m.role}`} role="listitem">
-              {isTyping ? m.content.slice(0, shown) : linkify(m.content, `m${i}`)}
+              {isTyping
+                ? m.content.slice(0, shown)
+                : linkify(m.content, `m${i}`)}
               {isTyping && <span className="cursor-blink" aria-hidden="true" />}
               {showLink && (
                 <a
                   className={`msg-link link-underline ${
-                    m.url!.startsWith('mailto:') ? 'msg-link-mail' : 'msg-link-url'
+                    m.url!.startsWith('mailto:')
+                      ? 'msg-link-mail'
+                      : 'msg-link-url'
                   }`}
                   href={m.url}
                   target={m.url!.startsWith('http') ? '_blank' : undefined}
-                  rel={m.url!.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  rel={
+                    m.url!.startsWith('http')
+                      ? 'noopener noreferrer'
+                      : undefined
+                  }
                 >
                   <span className="msg-link-icon">
                     {m.url!.startsWith('mailto:') ? '✉' : '🔗'}
@@ -227,7 +255,11 @@ export default function ChatWidget() {
       {messages.length === 0 && (
         <div className="suggestions">
           {SUGGESTIONS.map((s) => (
-            <button key={s} className="chip link-underline" onClick={() => send(s)}>
+            <button
+              key={s}
+              className="chip link-underline"
+              onClick={() => send(s)}
+            >
               {s}
             </button>
           ))}
@@ -275,7 +307,11 @@ export default function ChatWidget() {
             }
           }}
         />
-        <button className="btn-send btn-press" type="submit" disabled={loading || !input.trim()}>
+        <button
+          className="btn-send btn-press"
+          type="submit"
+          disabled={loading || !input.trim()}
+        >
           Send
         </button>
       </form>

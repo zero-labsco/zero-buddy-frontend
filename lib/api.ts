@@ -35,7 +35,7 @@ export class ChatApiError extends Error {
 // 带超时的 fetch：超时抛出带 isNetworkError=true 的错误
 async function fetchWithTimeout(
   url: string,
-  init: RequestInit
+  init: RequestInit,
 ): Promise<Response> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -43,10 +43,18 @@ async function fetchWithTimeout(
     return await fetch(url, { ...init, signal: controller.signal });
   } catch (e) {
     if (e instanceof DOMException && e.name === 'AbortError') {
-      throw new ChatApiError('Request timed out. The service may be unavailable.', 0, true);
+      throw new ChatApiError(
+        'Request timed out. The service may be unavailable.',
+        0,
+        true,
+      );
     }
     // 网络层错误（连接被拒、DNS 失败等）= 服务掉线
-    throw new ChatApiError('Cannot reach the service. Please try again later.', 0, true);
+    throw new ChatApiError(
+      'Cannot reach the service. Please try again later.',
+      0,
+      true,
+    );
   } finally {
     clearTimeout(timer);
   }
@@ -55,7 +63,9 @@ async function fetchWithTimeout(
 // 发送整段对话历史到后端 /api/chat。
 // 返回体为统一信封 { code, message, body }，业务数据在 body 中。
 // 网络错误/超时抛 isNetworkError=true，供 UI 展示友好兜底提示并允许重试。
-export async function sendChat(messages: { role: string; content: string }[]): Promise<ChatResult> {
+export async function sendChat(
+  messages: { role: string; content: string }[],
+): Promise<ChatResult> {
   let res: Response;
   try {
     res = await fetchWithTimeout(`${API_URL}/api/chat`, {
@@ -65,7 +75,11 @@ export async function sendChat(messages: { role: string; content: string }[]): P
     });
   } catch (e) {
     if (e instanceof ChatApiError) throw e;
-    throw new ChatApiError('Cannot reach the service. Please try again later.', 0, true);
+    throw new ChatApiError(
+      'Cannot reach the service. Please try again later.',
+      0,
+      true,
+    );
   }
 
   let envelope: ApiEnvelope<{ reply: string; source: string; url?: string }>;
@@ -97,4 +111,3 @@ export async function checkHealth(): Promise<boolean> {
     return false;
   }
 }
-
