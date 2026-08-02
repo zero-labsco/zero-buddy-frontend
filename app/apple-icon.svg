@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <!-- 背景方块 / Background square -->
+  <rect width="180" height="180" rx="36" fill="#0a0a0a"/>
+  <!-- 边框 / Border -->
+  <rect x="2" y="2" width="176" height="176" rx="34" fill="none" stroke="#5eead4" stroke-width="3" opacity="0.3"/>
+  <!-- Z 字母 / Letter Z -->
+  <text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle"
+        font-family="system-ui, -apple-system, sans-serif"
+        font-size="100" font-weight="700" fill="#5eead4">Z</text>
+</svg>
