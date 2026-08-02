@@ -89,7 +89,8 @@ export default function ChatWidget() {
 
   // 组件卸载时清理所有仍在跑的打字定时器
   useEffect(() => {
-    return () => Object.values(timers.current).forEach(clearInterval);
+    const activeTimers = timers.current;
+    return () => Object.values(activeTimers).forEach(clearInterval);
   }, []);
 
   // 检测后端连通性，并周期性刷新状态点
