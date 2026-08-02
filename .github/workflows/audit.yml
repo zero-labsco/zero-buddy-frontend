@@ -1,13 +1,18 @@
 name: Dependency Audit & Auto-Fix
 
-# 自动检查前端依赖的安全漏洞（severity vulnerabilities）：
-# 每周一 09:00 自动跑 npm audit；若发现可修复漏洞，自动 npm audit fix
-# 并开一个 PR（标题符合 Conventional Commits，不会自动合并，需人工 review）。
+# 安全优先策略（Security-first）：
+# 1) 任何版本（含 Dependabot 拉取的最新版）都必须通过安全审计才能合入 —— 安全是硬门槛，
+#    不允许“有高危/严重漏洞的版本”停留在仓库中。
+# 2) 每周自动跑 npm audit；发现高危/严重漏洞时，先尝试 `npm audit fix`（仅兼容更新）。
+# 3) 修复后再次校验：只有“已无高危/严重漏洞”才开 PR；若仍有漏洞（需破坏性升级），
+#    工作流直接失败（status 红），提醒人工介入，绝不以“最新版”为由放行不安全版本。
+# 4) PR 合并前另有 dependency-review 门禁（.github/workflows/dependency-review.yml）
+#    拦截任何引入高危/严重漏洞的 PR（含 Dependabot 的最新版 PR）。
 # 也可在 Actions 页面手动触发。
 
 on:
   schedule:
-    - cron: "0 9 * * 1" # 每周一 09:00 UTC
+    - cron: '0 9 * * 1' # 每周一 09:00 UTC
   workflow_dispatch: {}
 
 permissions:
@@ -20,20 +25,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
+      # 初始安全扫描（高危/严重为门槛）。失败仅用于记录 has_vulns，不直接终止。
       - name: Check for vulnerabilities
-        id: audit
+        id: audit_before
         continue-on-error: true
         run: |
           if npm audit --audit-level=high; then
@@ -43,33 +49,44 @@ jobs:
           fi
 
       - name: Stop if no vulnerabilities
-        if: steps.audit.outputs.has_vulns == 'false'
+        if: steps.audit_before.outputs.has_vulns == 'false'
         run: echo "✅ No high/critical vulnerabilities found. Nothing to do."
 
+      # 尝试非破坏性修复（仅兼容版本更新；不会引入 breaking change）
       - name: Auto-fix vulnerabilities (non-breaking)
-        if: steps.audit.outputs.has_vulns == 'true'
-        run: npm audit fix
+        if: steps.audit_before.outputs.has_vulns == 'true'
+        continue-on-error: true
+        run: npm audit fix --audit-level=high
+
+      # 修复后再次校验：安全是硬门槛，未清零则工作流失败（status 红）。
+      - name: Verify clean after fix (security gate)
+        if: steps.audit_before.outputs.has_vulns == 'true'
+        run: |
+          echo "🔒 Security gate: repository must have no high/critical vulnerabilities."
+          npm audit --audit-level=high
 
       - name: Create Pull Request
-        if: steps.audit.outputs.has_vulns == 'true'
+        if: steps.audit_before.outputs.has_vulns == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(deps): fix npm audit vulnerabilities"
+          commit-message: 'chore(deps): fix npm audit vulnerabilities'
           branch: chore/auto-fix-npm-audit
           delete-branch: true
-          title: "chore(deps): fix npm audit vulnerabilities"
+          title: 'chore(deps): fix npm audit vulnerabilities'
           body: |
             ## Automated dependency security fix
 
             This PR was created automatically by the **Dependency Audit & Auto-Fix** workflow
-            after `npm audit --audit-level=high` detected vulnerabilities.
+            after `npm audit --audit-level=high` detected vulnerabilities, and after a
+            non-breaking `npm audit fix` brought the dependency tree back to a safe state.
 
-            - Fixed via `npm audit fix` (non-breaking, compatible updates only).
+            - Fixed via `npm audit fix` (compatible updates only — no breaking changes).
+            - ✅ Post-fix `npm audit --audit-level=high` passes (security gate satisfied).
             - Please review the diff and run `npm ci && npm run build` before merging.
 
-            > If `npm audit fix` could not resolve a vulnerability without a breaking change,
-            > it is left for manual intervention.
+            > If a vulnerability could only be resolved by a breaking change, the security
+            > gate fails on purpose and this PR is **not** created — manual intervention required.
           labels: |
             dependencies
             security

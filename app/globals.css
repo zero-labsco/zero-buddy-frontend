@@ -95,15 +95,30 @@ a:hover {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 .bg-grid {
-  background-image:
-    linear-gradient(to right, rgb(var(--border) / 0.5) 1px, transparent 1px),
+  background-image: linear-gradient(
+      to right,
+      rgb(var(--border) / 0.5) 1px,
+      transparent 1px
+    ),
     linear-gradient(to bottom, rgb(var(--border) / 0.5) 1px, transparent 1px);
   background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 100%);
+  mask-image: radial-gradient(
+    ellipse 80% 60% at 50% 0%,
+    #000 30%,
+    transparent 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 60% at 50% 0%,
+    #000 30%,
+    transparent 100%
+  );
 }
 .bg-glow {
-  background: radial-gradient(ellipse 90% 50% at 50% -10%, rgb(var(--accent) / 0.12), transparent 70%);
+  background: radial-gradient(
+    ellipse 90% 50% at 50% -10%,
+    rgb(var(--accent) / 0.12),
+    transparent 70%
+  );
 }
 
 /* ---------- Scrollbar ---------- */
@@ -124,31 +139,68 @@ a:hover {
 
 /* ---------- 动画关键帧与工具类（淡入/呼吸光/光标闪烁/逐字入场/悬停抖动） ---------- */
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgb(var(--accent) / 0.5); }
-  50% { box-shadow: 0 0 0 6px rgb(var(--accent) / 0); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(var(--accent) / 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgb(var(--accent) / 0);
+  }
 }
 @keyframes cursor-blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
 }
 @keyframes text-shake {
-  0% { transform: translateY(0); }
-  25% { transform: translateY(-3px); }
-  50% { transform: translateY(0); }
-  75% { transform: translateY(-1px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-3px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-1px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 @keyframes char-in {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .fade-in {
@@ -179,7 +231,9 @@ a:hover {
 .mouse-hover-char {
   display: inline-block;
   cursor: default;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
+  transition:
+    color 0.2s ease,
+    text-shadow 0.2s ease;
 }
 .mouse-hover-char:hover {
   color: rgb(var(--accent));
@@ -263,7 +317,12 @@ a:hover {
   margin: 56px auto 0;
   height: 1px;
   width: 64px;
-  background: linear-gradient(to right, transparent, rgb(var(--accent) / 0.5), transparent);
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgb(var(--accent) / 0.5),
+    transparent
+  );
 }
 
 /* ---------- 聊天组件（卡片/消息气泡/建议芯片/输入框/发送按钮） ---------- */
@@ -393,7 +452,9 @@ a:hover {
   padding: 7px 13px;
   background-color: transparent;
   cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 .chip:hover {
   color: rgb(var(--accent));
@@ -436,9 +497,15 @@ a:hover {
   font-size: 13px;
   font-weight: 600;
   color: rgb(10 10 10);
-  background: linear-gradient(135deg, rgb(var(--accent)), rgb(var(--accent-cyan)));
+  background: linear-gradient(
+    135deg,
+    rgb(var(--accent)),
+    rgb(var(--accent-cyan))
+  );
   cursor: pointer;
-  transition: filter 0.2s ease, transform 0.1s ease;
+  transition:
+    filter 0.2s ease,
+    transform 0.1s ease;
 }
 .btn-send:hover {
   filter: brightness(1.08);
@@ -470,7 +537,9 @@ a:hover {
   color: #021014;
   background: linear-gradient(90deg, #36e0c8, #38bdf8);
   cursor: pointer;
-  transition: filter 0.2s ease, transform 0.1s ease;
+  transition:
+    filter 0.2s ease,
+    transform 0.1s ease;
 }
 .btn-retry:hover {
   filter: brightness(1.08);
@@ -500,6 +569,10 @@ a:hover {
 }
 
 @media (max-width: 640px) {
-  .chat-messages { max-height: 380px; }
-  .msg { max-width: 92%; }
+  .chat-messages {
+    max-height: 380px;
+  }
+  .msg {
+    max-width: 92%;
+  }
 }

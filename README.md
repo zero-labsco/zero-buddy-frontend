@@ -26,12 +26,12 @@ The look & feel mirrors [zerolabsco.com](https://zerolabsco.com):
 
 ## Tech stack
 
-| Concern     | Choice                |
-| ----------- | --------------------- |
-| Framework   | Next.js 14 (App Router) |
-| Language    | TypeScript            |
-| Styling     | Plain CSS (globals.css) |
-| Data        | `fetch` to backend REST API |
+| Concern   | Choice                      |
+| --------- | --------------------------- |
+| Framework | Next.js 14 (App Router)     |
+| Language  | TypeScript                  |
+| Styling   | Plain CSS (globals.css)     |
+| Data      | `fetch` to backend REST API |
 
 ## Project structure
 
@@ -74,13 +74,13 @@ npm start
 
 ## Environment (`.env.local`)
 
-| Variable            | Default                  | Description                |
-| ------------------- | ------------------------ | -------------------------- |
-| `NEXT_PUBLIC_API_URL` | `http://localhost:3030` | Base URL of the backend API (no trailing `/api/chat`) |
-| `NEXT_PUBLIC_PRODUCT_NAME` | `Zero Buddy`       | Product name shown in the UI |
-| `NEXT_PUBLIC_ORG_NAME` | `Zero Labs`           | Organization name shown in the UI |
-| `NEXT_PUBLIC_REPO_URL` | `https://github.com/zero-labsco` | Footer link URL (empty = hide link) |
-| `NEXT_PUBLIC_LABEL` | `Zero Labs`             | Footer link display text (defaults to ORG_NAME if unset) |
+| Variable                   | Default                          | Description                                              |
+| -------------------------- | -------------------------------- | -------------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL`      | `http://localhost:3030`          | Base URL of the backend API (no trailing `/api/chat`)    |
+| `NEXT_PUBLIC_PRODUCT_NAME` | `Zero Buddy`                     | Product name shown in the UI                             |
+| `NEXT_PUBLIC_ORG_NAME`     | `Zero Labs`                      | Organization name shown in the UI                        |
+| `NEXT_PUBLIC_REPO_URL`     | `https://github.com/zero-labsco` | Footer link URL (empty = hide link)                      |
+| `NEXT_PUBLIC_LABEL`        | `Zero Labs`                      | Footer link display text (defaults to ORG_NAME if unset) |
 
 ## Notes
 
@@ -103,7 +103,8 @@ npm start
 
 ## Contributing & CI
 
-This repo follows the [Zero Labs contributing guidelines](https://github.com/zero-labsco/.github/blob/main/profile/CONTRIBUTING.md):
+Full contribution guidelines (English + 简体中文) are in **[CONTRIBUTING.md](./CONTRIBUTING.md)**,
+following the [Zero Labs contributing guidelines](https://github.com/zero-labsco/.github/blob/main/profile/CONTRIBUTING.md):
 
 - **Commit messages** must follow [Conventional Commits](https://www.conventionalcommits.org)
   (e.g. `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `ci:` …).
@@ -122,13 +123,13 @@ This repo follows the [Zero Labs contributing guidelines](https://github.com/zer
 
 ### Available scripts
 
-| Script                  | Purpose                                  |
-| ----------------------- | ---------------------------------------- |
-| `npm run dev`           | Start Next.js dev server on port 3040    |
-| `npm run build`         | Production build (type-check + lint)     |
-| `npm run lint:eslint`   | ESLint (Airbnb) check                    |
-| `npm run lint:prettier` | Prettier format check                    |
-| `npm run format`        | Auto-format with Prettier                |
+| Script                  | Purpose                               |
+| ----------------------- | ------------------------------------- |
+| `npm run dev`           | Start Next.js dev server on port 3040 |
+| `npm run build`         | Production build (type-check + lint)  |
+| `npm run lint:eslint`   | ESLint (Airbnb) check                 |
+| `npm run lint:prettier` | Prettier format check                 |
+| `npm run format`        | Auto-format with Prettier             |
 
 ### CI workflow (`.github/workflows/ci.yml`)
 
@@ -143,15 +144,22 @@ Runs on every push to `main`/`master` and on every PR:
 
 - `npm`: weekly dependency updates, `chore:` commit prefix.
 - `github-actions`: weekly workflow updates, `ci:` commit prefix.
+- **Security-first**: all updates must pass the audit / dependency-review gates below before merge; Dependabot never auto-merges.
 
 ### Dependency Audit & Auto-Fix (`.github/workflows/audit.yml`)
 
 - Runs **every Monday 09:00 UTC** and is also manually triggerable (`workflow_dispatch`).
-- Runs `npm audit --audit-level=high`. If vulnerabilities are found, it runs `npm audit fix`
-  (compatible, non-breaking updates only) and opens a PR titled
-  `chore(deps): fix npm audit vulnerabilities` for human review.
+- **Security is a hard gate**: runs `npm audit --audit-level=high`; if vulnerabilities are found,
+  it runs `npm audit fix` (compatible, non-breaking updates only), then re-checks. The job
+  **fails (red)** unless the tree is clean — an unsafe version is never accepted "just because it's latest".
+- If the fix succeeds, it opens a PR titled `chore(deps): fix npm audit vulnerabilities` for human review.
 - The PR is **never auto-merged** — a maintainer must review and merge.
-- Breaking-only fixes (requiring `--force`) are left for manual intervention.
+- Vulnerabilities needing a breaking change are left for manual intervention (job fails on purpose).
+
+### Dependency Review Gate (`.github/workflows/dependency-review.yml`)
+
+- Runs on **every PR to `main`**. Blocks any change that introduces high/critical vulnerabilities
+  (covers Dependabot's "latest version" PRs too). Ensures **secure-first, then latest**.
 
 ---
 

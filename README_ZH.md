@@ -19,12 +19,12 @@
 
 ## 技术栈
 
-| 关注点   | 选型                      |
-| -------- | ------------------------- |
-| 框架     | Next.js 14（App Router）  |
-| 语言     | TypeScript                |
-| 样式     | 原生 CSS（globals.css）   |
-| 数据     | `fetch` 调用后端 REST API |
+| 关注点 | 选型                      |
+| ------ | ------------------------- |
+| 框架   | Next.js 14（App Router）  |
+| 语言   | TypeScript                |
+| 样式   | 原生 CSS（globals.css）   |
+| 数据   | `fetch` 调用后端 REST API |
 
 ## 项目结构
 
@@ -67,13 +67,13 @@ npm start
 
 ## 环境变量（`.env.local`）
 
-| 变量                | 默认值                    | 说明                          |
-| ------------------- | ------------------------- | ----------------------------- |
-| `NEXT_PUBLIC_API_URL` | `http://localhost:3030` | 后端 API 的基础地址（不带 /api/chat） |
-| `NEXT_PUBLIC_PRODUCT_NAME` | `Zero Buddy`       | 界面显示的产品名 |
-| `NEXT_PUBLIC_ORG_NAME` | `Zero Labs`           | 界面显示的组织名 |
-| `NEXT_PUBLIC_REPO_URL` | `https://github.com/zero-labsco` | 底部 footer 链接地址（留空则不显示链接） |
-| `NEXT_PUBLIC_LABEL` | `Zero Labs`             | 底部 footer 链接的显示文案（未设置时回退到组织名） |
+| 变量                       | 默认值                           | 说明                                               |
+| -------------------------- | -------------------------------- | -------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL`      | `http://localhost:3030`          | 后端 API 的基础地址（不带 /api/chat）              |
+| `NEXT_PUBLIC_PRODUCT_NAME` | `Zero Buddy`                     | 界面显示的产品名                                   |
+| `NEXT_PUBLIC_ORG_NAME`     | `Zero Labs`                      | 界面显示的组织名                                   |
+| `NEXT_PUBLIC_REPO_URL`     | `https://github.com/zero-labsco` | 底部 footer 链接地址（留空则不显示链接）           |
+| `NEXT_PUBLIC_LABEL`        | `Zero Labs`                      | 底部 footer 链接的显示文案（未设置时回退到组织名） |
 
 ## 说明
 
