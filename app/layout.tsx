@@ -1,5 +1,5 @@
 // 根布局：加载三款官网同款字体，并注入全局背景图层
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
@@ -26,6 +26,17 @@ export const metadata: Metadata = {
   title: 'Zero Buddy — Zero Labs AI Assistant',
   description:
     'An AI assistant for Zero Labs open-source projects: Zero Inspector Kit, Flutter Agent Kit, WizardPlayer and Invoice Zero.',
+};
+
+// 视口设置：移动端适配的关键，缺它会让媒体查询在手机上失效
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
+    { media: '(prefers-color-scheme: light)', color: '#fafafa' },
+  ],
 };
 
 export default function RootLayout({

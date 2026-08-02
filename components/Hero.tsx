@@ -26,7 +26,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="hero">
+    <section className="hero hero--compact">
       {/* 顶部等宽小字副标题 */}
       <p className="hero-subtitle fade-in">
         {ORG_NAME.toUpperCase()} &middot; AI ASSISTANT

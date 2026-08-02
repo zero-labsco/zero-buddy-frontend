@@ -270,13 +270,13 @@ a:hover {
 }
 
 .hero {
-  min-height: 88vh;
+  min-height: 64vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding-top: 80px;
+  padding-top: 64px;
 }
 .hero-subtitle {
   font-family: var(--font-mono);
@@ -568,11 +568,121 @@ a:hover {
   color: rgb(var(--foreground-dim));
 }
 
+/* ---------- 响应式：移动端适配 ---------- */
+/* 大屏（≤1024px）：容器收窄，避免内容贴边过满 */
+@media (max-width: 1024px) {
+  .page {
+    max-width: 920px;
+    padding: 0 20px 56px;
+  }
+  .chat-wrap {
+    max-width: 640px;
+  }
+}
+
+/* 平板（≤768px）：聊天卡片占满可用宽度，间距略减；Hero 压缩为紧凑条 */
+@media (max-width: 768px) {
+  .page {
+    padding: 0 16px 48px;
+  }
+  .chat-wrap {
+    max-width: 100%;
+  }
+  .chat-shell {
+    border-radius: 14px;
+  }
+  .chat-header {
+    padding: 14px 16px;
+  }
+  .chat-messages {
+    padding: 18px 16px;
+  }
+  .suggestions {
+    padding: 0 16px 14px;
+  }
+  .chat-input {
+    padding: 12px 14px;
+  }
+  .retry-bar {
+    margin: 0 16px 12px;
+  }
+
+  /* Hero 移动端简化：收缩成一行紧凑标题条，让聊天区一屏可见 */
+  .hero {
+    min-height: 0;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+    text-align: left;
+    padding-top: 20px;
+    padding-bottom: 16px;
+  }
+  .hero--compact .hero-phonetic,
+  .hero--compact .hero-desc,
+  .hero--compact .hero-divider {
+    display: none;
+  }
+  .hero--compact .hero-subtitle {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    margin-bottom: 0;
+  }
+  .hero--compact .hero-title {
+    font-size: clamp(1.6rem, 7vw, 2.4rem);
+    line-height: 1.1;
+  }
+  .hero--compact .hero-tagline {
+    margin: 0;
+    font-size: 13px;
+    max-width: none;
+    flex-basis: 100%;
+  }
+  .hero--compact .cursor-blink {
+    height: 0.9em;
+  }
+}
+
+/* 手机（≤640px）：卡片贴边、气泡更宽、字体紧凑 */
 @media (max-width: 640px) {
+  .chat-shell {
+    border-radius: 12px;
+    border-left: none;
+    border-right: none;
+  }
   .chat-messages {
     max-height: 380px;
   }
   .msg {
     max-width: 92%;
+    font-size: 13.5px;
+  }
+  .chip {
+    padding: 6px 11px;
+  }
+  .btn-send {
+    padding: 0 16px;
+  }
+  /* 移动端跳过过长的入场延迟，聊天卡片立即出现 */
+  .chat-wrap.fade-in-up {
+    animation-delay: 0.2s;
+  }
+}
+
+/* 小手机（≤380px）：进一步压缩，避免横向溢出 */
+@media (max-width: 380px) {
+  .page {
+    padding: 0 12px 40px;
+  }
+  .chat-header {
+    font-size: 12px;
+    gap: 8px;
+  }
+  .chat-input {
+    gap: 8px;
+  }
+  .btn-send {
+    padding: 0 14px;
   }
 }

@@ -9,7 +9,7 @@ export default function Home() {
       {/* 顶部品牌介绍区（逐字标题 + 打字机标语） */}
       <Hero />
       {/* 聊天卡片：延迟入场，避免和 Hero 动画重叠 */}
-      <div className="chat-wrap fade-in-up" style={{ animationDelay: '1.4s' }}>
+      <div className="chat-wrap fade-in-up" style={{ animationDelay: '0.6s' }}>
         <ChatWidget />
       </div>
       <footer className="footer">
