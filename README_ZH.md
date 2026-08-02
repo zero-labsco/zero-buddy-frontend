@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Zero%20Buddy-%E5%89%8D%E7%AB%AF%20Frontend-5eead4?style=for-the-badge" alt="Zero Buddy 前端" />
-  <img src="https://img.shields.io/badge/Next.js-14-000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Next.js-000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/License-Apache--2.0-blue?style=for-the-badge" alt="License" />
 </p>
@@ -8,8 +8,7 @@
 <h1 align="center">Zero Buddy 前端 (Frontend)</h1>
 
 <p align="center">
-  Zero Buddy AI 助手的官方聊天界面，视觉风格与 Zero Labs 品牌一致（深色主题、
-  青绿强调色、Inter / Space Grotesk / JetBrains Mono 字体）。
+  Zero Buddy AI 助手的官方聊天界面。
 </p>
 
 <p align="center">

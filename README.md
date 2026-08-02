@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Zero%20Buddy-Frontend-5eead4?style=for-the-badge" alt="Zero Buddy Frontend" />
-  <img src="https://img.shields.io/badge/Next.js-14-000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Next.js-000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/License-Apache--2.0-blue?style=for-the-badge" alt="License" />
 </p>
@@ -8,9 +8,7 @@
 <h1 align="center">Zero Buddy Frontend</h1>
 
 <p align="center">
-  The official chat UI for the Zero Buddy AI assistant, styled to match the
-  Zero Labs brand (dark theme, teal accent, Inter / Space Grotesk / JetBrains
-  Mono typography).
+  The official chat UI for the Zero Buddy AI assistant.
 </p>
 
 <p align="center">
