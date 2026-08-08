@@ -1,8 +1,9 @@
 // 与后端通信的唯一入口，集中错误处理、超时控制与地址配置。
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3030';
 
-// 单次请求超时（毫秒）。超时视为网络不可用，可触发前端兜底提示。
-const REQUEST_TIMEOUT_MS = 15_000;
+// 单次请求超时（毫秒）。后端为「累积完整流式响应后一次性返回」，
+// 长回答（如「详细介绍」）可能超过 15s，故放宽到 120s 避免误判超时。
+const REQUEST_TIMEOUT_MS = 120_000;
 
 export type ChatSource = 'faq' | 'cache' | 'llm' | 'offline';
 
@@ -110,4 +111,103 @@ export async function checkHealth(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+// 流式发送：调用 /api/chat/stream，边收 SSE 边回调，实现「边生成边显示」。
+// onDelta(content: string) 每收到一段增量文本调用一次；
+// onDone({ source, url }) 在流正常结束时调用；onError(msg) 在业务/流错误时调用。
+// 注意：流式请求不使用全局超时（生成可能很久），但保留连接超时以便服务掉线时快速失败。
+export async function sendChatStream(
+  messages: { role: string; content: string }[],
+  handlers: {
+    onDelta: () => void;
+    onDone?: () => void;
+    onError?: () => void;
+  },
+): Promise<void> {
+  let res: Response;
+  try {
+    // 流式连接用较短的连接超时（服务掉线能快速报错），不使用逐字超时
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 30_000);
+    try {
+      res = await fetch(`${API_URL}/api/chat/stream`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages }),
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+  } catch (e) {
+    // 连接失败 / 超时 = 服务掉线
+    handlers.onError?.(
+      e instanceof DOMException && e.name === 'AbortError'
+        ? 'Request timed out. The service may be unavailable.'
+        : 'Cannot reach the service. Please try again later.',
+    );
+    return;
+  }
+
+  if (!res.ok || !res.body) {
+    handlers.onError?.(`Request failed (${res.status})`);
+    return;
+  }
+
+  // 逐块读取 SSE：按行解析 `data: {json}`。
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let doneInfo: { source: string; url?: string } | null = null;
+
+  try {
+    for (;;) {
+      // eslint-disable-next-line no-await-in-loop
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      // SSE 以空行（\n\n）分隔事件；按行处理 data:
+      let nl = buffer.indexOf('\n');
+      while (nl >= 0) {
+        const line = buffer.slice(0, nl).trim();
+        buffer = buffer.slice(nl + 1);
+        if (line.startsWith('data:')) {
+          const payload = line.slice('data:'.length).trim();
+          if (payload) {
+            try {
+              const evt = JSON.parse(payload) as {
+                type?: string;
+                content?: string;
+                source?: string;
+                url?: string;
+                message?: string;
+              };
+              if (evt.type === 'delta' && typeof evt.content === 'string') {
+                handlers.onDelta(evt.content);
+              } else if (evt.type === 'done') {
+                doneInfo = { source: evt.source ?? 'llm', url: evt.url };
+              } else if (evt.type === 'error') {
+                handlers.onError?.(evt.message ?? 'Unknown stream error');
+                return;
+              }
+            } catch {
+              // skip malformed SSE payloads
+            }
+          }
+        }
+        nl = buffer.indexOf('\n');
+      }
+    }
+  } catch (e) {
+    handlers.onError?.(
+      e instanceof DOMException && e.name === 'AbortError'
+        ? 'Request timed out. The service may be unavailable.'
+        : 'Connection interrupted.',
+    );
+    return;
+  }
+
+  handlers.onDone?.(doneInfo ?? { source: 'llm' });
 }

@@ -49,6 +49,8 @@ export default function RootLayout({
       lang="en"
       // 默认深色主题，并把三款字体变量挂到根节点
       className={`dark ${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+      // 容忍浏览器扩展（如沉浸式翻译）在 <html> 上注入的属性导致的 hydration 差异
+      suppressHydrationWarning
     >
       <body>
         {/* 三层背景纹理：噪点 / 网格 / 顶部光晕 */}
