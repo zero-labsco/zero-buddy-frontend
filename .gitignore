@@ -14,6 +14,11 @@
 *.tsbuildinfo
 next-env.d.ts
 
+# Playwright test artifacts
+/test-results
+/playwright-report
+/blob-report
+
 # OS / editor noise
 .DS_Store
 Thumbs.db

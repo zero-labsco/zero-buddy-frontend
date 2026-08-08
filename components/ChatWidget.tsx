@@ -3,55 +3,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { sendChatStream, checkHealth } from '../lib/api';
+import { linkify } from '../lib/linkify';
 
 // 一条消息：用户(user) 或 助手(assistant)
 type Message = { role: 'user' | 'assistant'; content: string; url?: string };
-
-// 把正文中的裸链接（http/https、mailto、裸邮箱）渲染为可点击 <a>，
-// 避免网址以纯文本堆叠、与来源链接块视觉粘连。仅用于打字结束后的静态渲染。
-// 匹配完整链接（保留点号，正确覆盖域名）；遇空白或 CJK/全角字符即止，
-// 避免中文紧跟 URL 后整段被误判为链接。尾部标点由 linkify 剥离归还文本
-const URL_RE =
-  /(https?:\/\/[^\s　-鿿]+|mailto:[^\s　-鿿]+|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
-// 链接尾部可能出现的句读/标点，需从链接中剥离、作为普通文本显示
-const TRAILING_PUNCT = /[，。、；：！？.,;:!?)\]}'"]+$/;
-function linkify(text: string, keyPrefix: string) {
-  const parts = text.split(URL_RE);
-  const out: React.ReactNode[] = [];
-  parts.forEach((part, idx) => {
-    if (!part) return;
-    // 无状态判定：该段是否为一个链接
-    const isUrl =
-      /^(https?:\/\/|mailto:)|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-        part,
-      );
-    if (!isUrl) {
-      out.push(<span key={`${keyPrefix}-${idx}`}>{part}</span>);
-      return;
-    }
-    // 剥离尾部标点：链接本体可点击，标点作为普通文本紧随其后
-    const m = part.match(TRAILING_PUNCT);
-    const punct = m ? m[0] : '';
-    const core = punct ? part.slice(0, -punct.length) : part;
-    const href =
-      core.startsWith('http') || core.startsWith('mailto:')
-        ? core
-        : `mailto:${core}`;
-    out.push(
-      <a
-        key={`${keyPrefix}-${idx}`}
-        className="msg-inline-link link-underline"
-        href={href}
-        target={core.startsWith('http') ? '_blank' : undefined}
-        rel={core.startsWith('http') ? 'noopener noreferrer' : undefined}
-      >
-        {core.replace('mailto:', '')}
-      </a>,
-    );
-    if (punct) out.push(<span key={`${keyPrefix}-p-${idx}`}>{punct}</span>);
-  });
-  return out;
-}
 
 // 首次进入时展示的建议问题（点击即可发送）
 const SUGGESTIONS = [

@@ -120,9 +120,9 @@ export async function checkHealth(): Promise<boolean> {
 export async function sendChatStream(
   messages: { role: string; content: string }[],
   handlers: {
-    onDelta: () => void;
-    onDone?: () => void;
-    onError?: () => void;
+    onDelta: (_content: string) => void;
+    onDone?: (_info: { source: string; url?: string }) => void;
+    onError?: (_message: string) => void;
   },
 ): Promise<void> {
   let res: Response;

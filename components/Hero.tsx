@@ -40,7 +40,8 @@ export default function Hero() {
             className="mouse-hover-char char-in"
             style={{ ['--i' as string]: i } as React.CSSProperties}
           >
-            {ch === ' ' ? ' ' : ch}
+            {/* 空格用不换行空格，避免 inline-block 下塌陷成 0 宽（"Zero Buddy" 变 "ZeroBuddy"） */}
+            {ch === ' ' ? ' ' : ch}
           </span>
         ))}
       </h1>

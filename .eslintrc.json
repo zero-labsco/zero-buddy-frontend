@@ -29,8 +29,31 @@
     "comma-dangle": "off", // 由 Prettier (trailingComma) 控制
     "prefer-destructuring": "off", // 与可读性权衡
     "no-undef": "off", // 类型/全局由 TypeScript 处理
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }], // 下划线前缀参数视为有意忽略（如回调类型标注）
     "no-console": "off", // 保留 console.error 用于前端错误排查
     "react-hooks/exhaustive-deps": "warn" // 仅提示，不阻断
   },
-  "ignorePatterns": ["node_modules/", ".next/", "out/"]
+  "ignorePatterns": ["node_modules/", ".next/", "out/"],
+  "overrides": [
+    {
+      // 测试文件与测试工具配置（e2e / vitest / Playwright）：允许引用 devDependencies，
+      // 换行类格式规则交给 Prettier 控制（与仓库既有理念一致）。
+      "files": [
+        "e2e/**/*.ts",
+        "e2e/**/*.tsx",
+        "lib/**/*.test.ts",
+        "lib/**/*.test.tsx",
+        "playwright.config.ts",
+        "vitest.config.mts"
+      ],
+      "rules": {
+        "import/no-extraneous-dependencies": [
+          "error",
+          { "devDependencies": true }
+        ],
+        "implicit-arrow-linebreak": "off",
+        "function-paren-newline": "off"
+      }
+    }
+  ]
 }

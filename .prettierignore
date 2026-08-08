@@ -3,5 +3,8 @@ node_modules
 out
 build
 coverage
+test-results
+playwright-report
+blob-report
 *.log
 package-lock.json
