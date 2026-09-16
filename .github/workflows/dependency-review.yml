@@ -1,8 +1,14 @@
 name: Dependency Review
 
-# 安全门禁：在 PR 合并前检查依赖变更是否引入高危/严重漏洞。
+# 安全门禁：在 PR 合并前用 npm audit 检查依赖是否带高危/严重漏洞。
 # 覆盖所有来源（含 Dependabot 自动拉取的“最新版”PR）—— 任何带高危/严重漏洞的更新
 # 都会被此门禁挡下，确保“先安全、再最新版”，不安全的版本无法合入。
+#
+# 之前使用 actions/dependency-review-action，但它依赖仓库的 Dependency graph
+# （/dependency-graph/compare API）。本仓库该 API 返回 404，且设置页没有对应开关，
+# action 会直接失败并提示 "Dependency review is not supported on this repository"。
+# 改用 npm audit：只依赖 package-lock.json，无需任何仓库设置。
+# 中低危不阻断 PR（由 audit.yml 周任务跟进）。
 
 on:
   pull_request:
@@ -10,7 +16,6 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
 
 jobs:
   dependency-review:
@@ -20,12 +25,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Dependency Review
-        uses: actions/dependency-review-action@v5
+      - name: Setup Node
+        uses: actions/setup-node@v7
         with:
-          # 仅拦截高危/严重；中低危不阻断（由 audit 周任务跟进）
-          fail-on-severity: high
-          # 危险许可变更也阻断
-          fail-on-scopes: 'runtime,development'
-          comment-summary-in-pr: true
-          warn-on-openssf-scorecard-severity: 'high'
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Audit dependencies (npm audit gate)
+        run: npm audit --audit-level=high
