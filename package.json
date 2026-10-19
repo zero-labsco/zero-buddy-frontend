@@ -20,7 +20,7 @@
     "test:e2e:report": "playwright show-report"
   },
   "dependencies": {
-    "next": "^15.5.25",
+    "next": "^15.5.28",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
